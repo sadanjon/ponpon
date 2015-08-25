@@ -1,4 +1,5 @@
 import THREE from "three";
+import SpriteMaterial from "./sprite-material";
 
 export default class SpriteCreator {
 	constructor() {
@@ -9,13 +10,15 @@ export default class SpriteCreator {
 		var mesh = new THREE.Mesh(this._createGeometry(), this._createMaterial(options));
 		mesh.scale.x = options.width;
 		mesh.scale.y = options.height;
+		mesh.position.x = options.position.x;
+		mesh.position.y = options.position.y;
 		return {
 			mesh: mesh
 		};
 	}
 
 	_createMaterial(options) {
-		return new THREE.MeshBasicMaterial({
+		return new SpriteMaterial({
 			color: options.color
 		});
 	}
