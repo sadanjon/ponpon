@@ -1,46 +1,88 @@
 import THREE from "three";
-import SpriteCreator from "./sprite-creator";
-import SpriteSheetCreator from "./sprite-sheet-creator";
+import {SpriteCreator,SpriteSheetCreator, SpriteUpdater} from "./sprite";
+import StageBuilder from "./stage-builder";
+
 
 var scene = new THREE.Scene();
 
 var ratio = window.innerWidth / window.innerHeight;
-var camera = new THREE.OrthographicCamera(-ratio * 10, ratio * 10, 5, -5, -10, 10);
+var camera = new THREE.OrthographicCamera(-ratio * 5, ratio * 5, 5, -5, -10, 10);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-var spriteCreator = new SpriteCreator();
-var spriteSheetCreator = new SpriteSheetCreator();
+var stageBuilder = new StageBuilder();
+var spriteUpdater = new SpriteUpdater();
 
-var spriteSheet = spriteSheetCreator.create({
-	id: "keen",
-	path: "/resources/keen.png"
+stageBuilder.build({
+	"spriteSheets": {
+		"keen": {
+			"diffusePath": "/resources/sprite1.png",
+			"grid": {
+				"repeat": [32, 32],
+				"offset": [0, 0]
+			},
+			"animations": {
+				"run-left": {
+					"start": -2,
+					"end": -5,
+					"fps": 25
+				},
+				"run-right": {
+					"start": 1,
+					"end": 4,
+					"fps": 25	
+				}
+			},
+			"statics": {
+				"stand-left": 0,
+				"stand-right": -1
+			}
+		}
+	},
+	"sprites": {
+		"keen": {
+			"spriteSheet": "keen",
+			"width": 2,
+			"height": 2,
+			"position": [0, 0, 0],
+			"hidden": false,
+			"spriteAnimation": {
+				"name": "run-right",
+				"play": true,
+				"time": 0
+			}
+		}
+	}
+})
+.then(stage => {
+	scene.add(stage.sprites.keen.mesh);
+
+	camera.position.z = 5;
+
+	var lastTime = 0;
+	function render(t) {
+		update(t - lastTime);
+		lastTime = t;
+		requestAnimationFrame(render);
+		renderer.render(scene, camera);
+	};
+
+	function renderInitial(t) {
+		lastTime = t;
+		requestAnimationFrame(render);
+	}
+
+	function update(dt) {
+		spriteUpdater.update(stage.sprites.keen, dt);
+	}	
+
+	requestAnimationFrame(renderInitial);
 });
 
-var sprite = spriteCreator.create({
-	spriteSheet: spriteSheet,
-	color: 0xff0000,
-	width: 2,
-	height: 1,
-	position: new THREE.Vector2(0, 0)
-});
 
-scene.add(sprite.mesh);
 
-camera.position.z = 5;
 
-var render = function () {
-	requestAnimationFrame( render );
-	renderer.render(scene, camera);
-};
 
-render();
 
-setTimeout(function() {
-	var gl = renderer.getContext();
-	var xxx = gl.getParameter(gl.CURRENT_PROGRAM);
-	console.log(gl.getShaderSource(gl.getAttachedShaders(xxx)[0]));
-	console.log(gl.getShaderSource(gl.getAttachedShaders(xxx)[1]));
-}, 1 * 1000)

@@ -1,5 +1,6 @@
 import THREE from "three";
 import SpriteMaterial from "./sprite-material";
+import Sprite from "./sprite";
 
 export default class SpriteCreator {
 	constructor() {
@@ -8,25 +9,28 @@ export default class SpriteCreator {
 
 	create(options) {
 		var mesh = new THREE.Mesh(this._createGeometry(), this._createMaterial(options));
-		mesh.scale.x = options.width;
-		mesh.scale.y = options.height;
-		mesh.position.x = options.position.x;
-		mesh.position.y = options.position.y;
-		return {
-			mesh: mesh
-		};
+		return new Sprite({
+			id: options.id,
+			mesh: mesh,
+			spriteSheet: options.spriteSheet,
+			position: options.position,
+			hidden: options.hidden,
+			width: options.width,
+			height: options.height,
+			spriteAnimation: options.spriteAnimation,
+			spriteStatic: options.spriteStatic
+		});
 	}
 
 	_createMaterial(options) {
 		return new SpriteMaterial({
-			color: options.color
+			diffuseTexture: options.spriteSheet.diffuseTexture
 		});
 	}
 
 	_createGeometry() {
 		if (!this._geometry)
 			this._geometry = new THREE.PlaneBufferGeometry(1, 1);
-		console.log(this._geometry);
 		return this._geometry;
 	}
 }
