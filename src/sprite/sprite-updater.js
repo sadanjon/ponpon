@@ -22,7 +22,7 @@ export default class SpriteUpdater {
         var grid = sprite.spriteSheet.grid;
         var imageWidth = sprite.spriteSheet.getImageWidth();
         var imageHeight = sprite.spriteSheet.getImageHeight();
-        if (sprite.spriteAnimation) {
+        if (!sprite.spriteAnimation.disabled) {
             var anim = sprite.spriteAnimation;
             var animDef = sprite.spriteSheet.animations[anim.name];
             var flipDirection = animDef.end < animDef.start;

@@ -1,7 +1,9 @@
 import THREE from "three";
-import {SpriteCreator,SpriteSheetCreator, SpriteUpdater} from "./sprite";
+import {SpriteCreator, SpriteSheetCreator, SpriteUpdater} from "./sprite";
 import StageBuilder from "./stage-builder";
-
+import InputService from "./input-service";
+import PlayerUpdater from "./player-updater";
+import Player from "./player";
 
 var scene = new THREE.Scene();
 
@@ -14,6 +16,8 @@ document.body.appendChild( renderer.domElement );
 
 var stageBuilder = new StageBuilder();
 var spriteUpdater = new SpriteUpdater();
+var inputService = new InputService();
+
 
 stageBuilder.build({
 	"spriteSheets": {
@@ -27,17 +31,17 @@ stageBuilder.build({
 				"run-left": {
 					"start": -2,
 					"end": -5,
-					"fps": 25
+					"fps": 30
 				},
 				"run-right": {
 					"start": 1,
 					"end": 4,
-					"fps": 25	
+					"fps": 30	
 				}
 			},
 			"statics": {
-				"stand-left": 0,
-				"stand-right": -1
+				"stand-left": -1,
+				"stand-right": 0
 			}
 		}
 	},
@@ -57,6 +61,9 @@ stageBuilder.build({
 	}
 })
 .then(stage => {
+	var player = new Player(stage.sprites.keen);
+	var playerUpdater = new PlayerUpdater(inputService, player);
+
 	scene.add(stage.sprites.keen.mesh);
 
 	camera.position.z = 5;
@@ -75,6 +82,7 @@ stageBuilder.build({
 	}
 
 	function update(dt) {
+		playerUpdater.update(dt);
 		spriteUpdater.update(stage.sprites.keen, dt);
 	}	
 

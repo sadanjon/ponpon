@@ -10,7 +10,7 @@ export default class Sprite {
         this.hidden = options.hidden;
         this.width = options.width;
         this.height = options.height;
-        this.spriteAnimation = options.spriteAnimation;
-        this.spriteStatic = options.spriteStatic;
+        this.spriteAnimation = options.spriteAnimation || {name: null, play: false, time: 0, disabled: true};
+        this.spriteStatic = options.spriteStatic || null;
     }
 }
