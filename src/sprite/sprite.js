@@ -7,6 +7,7 @@ export default class Sprite {
         this.mesh = options.mesh;
         this.spriteSheet = options.spriteSheet;
         this.position = options.position;
+        this.zIndex = options.zIndex || 0;
         this.hidden = options.hidden;
         this.width = options.width;
         this.height = options.height;

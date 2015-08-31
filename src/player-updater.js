@@ -1,3 +1,4 @@
+import THREE from "three";
 
 export default class PlayerUpdater {
 
@@ -9,7 +10,11 @@ export default class PlayerUpdater {
     }
 
     startListening() {
-        this._listenerId = this._inputService.addListener((key, isPressed) => {
+        this._listenerId = this._inputService.addListener((key, mappedKey, isPressed) => {
+            if (mappedKey === "UP" && isPressed && !this._player.isInTheAir) {
+                this._player.velocity.y = 0.04;
+                this._player.isInTheAir = true;
+            }
         });
     }
 
@@ -18,26 +23,51 @@ export default class PlayerUpdater {
     }
 
     update(dt) {
-        this._updatePlayer();
+        this._updatePlayer(dt);
         this._updatePlayerSpriteAnimation();
-        this._updatePlayerSpritePosition(dt);
+        this._updatePlayerSpritePosition();
     }
 
-    _updatePlayer() {
-        if (this._inputService.isPressed("LEFT")) {
+    _updatePlayer(dt) {
+        if (this._inputService.isMappingPressed("LEFT")) {
             this._player.direction = "LEFT";
-            this._player.velocity.set(-this._runVelocity, 0);
-        } else if (this._inputService.isPressed("RIGHT")) {
+            this._player.velocity.x = -this._runVelocity;
+        } else if (this._inputService.isMappingPressed("RIGHT")) {
             this._player.direction = "RIGHT";
-            this._player.velocity.set(this._runVelocity, 0);
+            this._player.velocity.x = this._runVelocity;
         } else {
-            this._player.velocity.set(0, 0);
+            this._player.velocity.x = 0;
+        }
+
+        this._updatePlayerPosition(dt);
+        this._detectCollision();
+    }
+
+    _updatePlayerPosition(dt) {
+         var d = new THREE.Vector2();
+
+        d.x = this._player.velocity.x * dt;
+        d.y = this._player.velocity.y * dt / 2;
+
+        if (this._player.isInTheAir) 
+            this._player.velocity.y += -0.0001 * dt;
+
+        d.y = this._player.velocity.y * dt / 2;
+
+        this._player.position.x += d.x;
+        this._player.position.y += d.y;
+    }
+
+    _detectCollision() {
+        if (this._player.position.y < 0.0001) {
+            this._player.velocity.y = 0;
+            this._player.isInTheAir = false;
         }
     }
 
     _updatePlayerSpriteAnimation() {
         var anim = this._player.sprite.spriteAnimation;
-        var isRunning = this._player.velocity.length() > 0;
+        var isRunning = Math.abs(this._player.velocity.x) > 0;
         if (!isRunning && this._player.direction === "RIGHT") {
             this._player.sprite.spriteStatic = "stand-right";
             anim.disabled = true;
@@ -57,12 +87,7 @@ export default class PlayerUpdater {
         }
     }
 
-    _updatePlayerSpritePosition(dt) {
-        var isRunning = this._player.velocity.length() > 0;
-        if (!isRunning)
-            return;
-        var v = this._player.velocity.clone().multiplyScalar(dt);
-        var p = this._player.sprite.position;
-        this._player.sprite.position.set(p.x + v.x, p.y + v.y, p.z);
+    _updatePlayerSpritePosition() {
+        this._player.sprite.position.copy(this._player.position);
     }
 }

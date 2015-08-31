@@ -50,7 +50,8 @@ stageBuilder.build({
 			"spriteSheet": "keen",
 			"width": 2,
 			"height": 2,
-			"position": [0, 0, 0],
+			"position": [0, 0],
+			"zIndex": 0,
 			"hidden": false,
 			"spriteAnimation": {
 				"name": "run-right",
@@ -67,6 +68,8 @@ stageBuilder.build({
 	scene.add(stage.sprites.keen.mesh);
 
 	camera.position.z = 5;
+
+	playerUpdater.startListening();
 
 	var lastTime = 0;
 	function render(t) {

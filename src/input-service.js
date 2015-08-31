@@ -4,6 +4,7 @@ export default class InputService {
     constructor() {
         this._keys = {};
         this._map = InputService.Map;
+        this._revMap = this._createReverseMap();
         this._counter = 1;
         this._listeners = {};
         window.addEventListener("keyup", e => this._onKeyUp(e));
@@ -20,12 +21,16 @@ export default class InputService {
         delete this._listeners[id];
     }
 
-    isPressed(name) {
-        var m = this._map[name];
-        for (var i = 0; i < m.length; ++i) 
+    isMappingPressed(name) {
+        var m = this._revMap[name] || [];
+        for (var i = 0; i < m.length; ++i)
             if (this._keys[m[i]])
                 return true;
         return false;
+    }
+
+    isPressed(name) {
+        return !!this._keys[name];
     }
 
     _onKeyDown(e) {
@@ -48,8 +53,16 @@ export default class InputService {
 
     _invokeListeners(key, isPressed) {
         var ids = Object.keys(this._listeners);
-        for (var i = 0; i < ids.length; ++i)
-            this._listeners[ids[i]](key, isPressed);
+        for (var i = 0; i < ids.length; ++i) {
+            this._listeners[ids[i]](key, this._getMappedKey(key), isPressed);
+        }
+    }
+
+    _getMappedKey(key) {
+        var m = this._map[key];
+        if (!m)
+            return key;
+        return m;
     }
 
     _getKey(event) {
@@ -72,11 +85,28 @@ export default class InputService {
             return "W";
     }
 
+    _createReverseMap() {
+        var result = {};
+        var ks = Object.keys(InputService.Map);
+        for (var i = 0; i < ks.length; ++i) {
+            var k = ks[i];
+            var v = InputService.Map[k];
+            if (result[v])
+                result[v].push(k);
+            else
+                result[v] = [k];
+        }
+        return result;
+    }
 }
 
 InputService.Map = {
-    "UP": ["UP", "W"],
-    "DOWN": ["DOWN", "S"],
-    "RIGHT": ["RIGHT", "D"],
-    "LEFT": ["LEFT", "A"],
+    "W": "UP",
+    "UP": "UP",
+    "S": "DOWN",
+    "DOWN": "DOWN",
+    "D": "RIGHT",
+    "RIGHT": "RIGHT",
+    "A": "LEFT",
+    "LEFT": "LEFT",
 };

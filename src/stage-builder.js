@@ -40,6 +40,7 @@ export default class StageBuilder {
                     width: value.width,
                     height: value.height,
                     position: this._arrayToVector(value.position),
+                    zIndex: value.zIndex,
                     hidden: value.hidden,
                     spriteStatic: value.spriteStatic,
                     spriteAnimation: value.spriteAnimation

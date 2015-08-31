@@ -14,6 +14,7 @@ export default class SpriteCreator {
 			mesh: mesh,
 			spriteSheet: options.spriteSheet,
 			position: options.position,
+			zIndex: options.zIndex,
 			hidden: options.hidden,
 			width: options.width,
 			height: options.height,

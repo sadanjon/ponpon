@@ -2,7 +2,9 @@
 export default class SpriteUpdater {
 
     update(sprite, dt) {
-        sprite.mesh.position.copy(sprite.position);
+        sprite.mesh.position.x = sprite.position.x;
+        sprite.mesh.position.y = sprite.position.y;
+        sprite.mesh.position.z = sprite.zIndex;
         sprite.mesh.scale.set(sprite.width, sprite.height, 1);
         sprite.mesh.visible = !sprite.hidden;
         this._updateSpriteTextureScale(sprite)
