@@ -4,6 +4,7 @@ import StageBuilder from "./stage-builder";
 import InputService from "./input-service";
 import PlayerUpdater from "./player-updater";
 import Player from "./player";
+import p2 from "p2";
 
 var scene = new THREE.Scene();
 
@@ -62,6 +63,7 @@ stageBuilder.build({
 	}
 })
 .then(stage => {
+	var p2World = new p2.World();
 	var player = new Player(stage.sprites.keen);
 	var playerUpdater = new PlayerUpdater(inputService, player);
 

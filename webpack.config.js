@@ -8,7 +8,8 @@ module.exports = {
 	},
 	module: {
 		loaders: [
-			{test: /\.jsx?$/, exclude: /node_modules/, loader: "babel", query: { plugins: ["typecheck"] }}
+			{test: /\.json$/, loader: "json"},
+			{test: /\.jsx?$/, exclude: /node_modules/, loader: "babel", query: { }}
 		]
 	},
 	devtool: "inline-source-map",
