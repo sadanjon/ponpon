@@ -51,7 +51,7 @@ stageBuilder.build({
 			"spriteSheet": "keen",
 			"width": 2,
 			"height": 2,
-			"position": [0, 0],
+			"position": [0, 1],
 			"zIndex": 0,
 			"hidden": false,
 			"spriteAnimation": {
@@ -64,8 +64,46 @@ stageBuilder.build({
 })
 .then(stage => {
 	var p2World = new p2.World();
+	p2World.solver.iterations = 200;
+	p2World.solver.tolerance = 0;
+	p2World.islandSplit = true;
+	p2World.sleepMode = p2.World.ISLAND_SLEEPING;
+	p2World.setGlobalStiffness(1e4);
+	var boxShape = new p2.Box({width: 2, height: 2});
+	var boxBody = new p2.Body({
+		mass: 1,
+		// damping: 0, 
+		fixedRotation: true,
+		// sleepSpeedLimit: 0.1,
+		position: [0, 2],
+		// velocity: [0, 0],
+		gravityScale: 4,
+		// ccdSpeedThreshold: 0.1,
+		// ccdIterations: 20,
+	});
+	boxBody.addShape(boxShape);
+	p2World.addBody(boxBody);
+
+	var planeShape = new p2.Plane();
+	var planeBody = new p2.Body({
+		mass: 0,
+		position: [0, -2]
+	});
+	planeBody.addShape(planeShape);
+	p2World.addBody(planeBody);
+
+	var boxMaterial = new p2.Material();
+	var planeMaterial = new p2.Material();
+
+
+	p2World.defaultContactMaterial = new p2.ContactMaterial(boxMaterial, planeMaterial, {
+		restitution: 0,
+		relaxation: 1e10
+	});
+	console.log(p2World.defaultContactMaterial);
+
 	var player = new Player(stage.sprites.keen);
-	var playerUpdater = new PlayerUpdater(inputService, player);
+	var playerUpdater = new PlayerUpdater(inputService, player, boxBody);
 
 	scene.add(stage.sprites.keen.mesh);
 
@@ -87,6 +125,8 @@ stageBuilder.build({
 	}
 
 	function update(dt) {
+		p2World.step(dt / 1000);
+		// console.log(boxBody.position[0], boxBody.position[1]);
 		playerUpdater.update(dt);
 		spriteUpdater.update(stage.sprites.keen, dt);
 	}	

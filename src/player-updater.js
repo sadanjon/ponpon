@@ -2,18 +2,20 @@ import THREE from "three";
 
 export default class PlayerUpdater {
 
-    constructor(inputService, player) {
+    constructor(inputService, player, playerBody) {
         this._inputService = inputService;
         this._player = player;
+        this._playerBody = playerBody;
         this._listenerId = null;
-        this._runVelocity = 0.0075;
+        this._runVelocity = 7.5;
     }
 
     startListening() {
         this._listenerId = this._inputService.addListener((key, mappedKey, isPressed) => {
-            if (mappedKey === "UP" && isPressed && !this._player.isInTheAir) {
-                this._player.velocity.y = 0.04;
-                this._player.isInTheAir = true;
+            if (mappedKey === "UP" && isPressed) {
+                // this._player.velocity.y = 0.04;
+                this._playerBody.velocity[1] = 20;
+                // this._player.isInTheAir = true;
             }
         });
     }
@@ -31,20 +33,23 @@ export default class PlayerUpdater {
     _updatePlayer(dt) {
         if (this._inputService.isMappingPressed("LEFT")) {
             this._player.direction = "LEFT";
-            this._player.velocity.x = -this._runVelocity;
+            // this._player.velocity.x = -this._runVelocity;
+            this._playerBody.velocity[0] = -this._runVelocity;
         } else if (this._inputService.isMappingPressed("RIGHT")) {
             this._player.direction = "RIGHT";
-            this._player.velocity.x = this._runVelocity;
+            // this._player.velocity.x = this._runVelocity;
+            this._playerBody.velocity[0] = this._runVelocity;
         } else {
-            this._player.velocity.x = 0;
+            this._playerBody.velocity[0] = 0;
+            // this._player.velocity.x = 0;
         }
 
-        this._updatePlayerPosition(dt);
-        this._detectCollision();
+        // this._updatePlayerPosition(dt);
+        // this._detectCollision();
     }
 
     _updatePlayerPosition(dt) {
-         var d = new THREE.Vector2();
+        var d = new THREE.Vector2();
 
         d.x = this._player.velocity.x * dt;
         d.y = this._player.velocity.y * dt / 2;
@@ -67,7 +72,7 @@ export default class PlayerUpdater {
 
     _updatePlayerSpriteAnimation() {
         var anim = this._player.sprite.spriteAnimation;
-        var isRunning = Math.abs(this._player.velocity.x) > 0;
+        var isRunning = Math.abs(this._playerBody.velocity[0]) > 0;
         if (!isRunning && this._player.direction === "RIGHT") {
             this._player.sprite.spriteStatic = "stand-right";
             anim.disabled = true;
@@ -88,6 +93,8 @@ export default class PlayerUpdater {
     }
 
     _updatePlayerSpritePosition() {
-        this._player.sprite.position.copy(this._player.position);
+        this._player.sprite.position.x = this._playerBody.position[0];
+        this._player.sprite.position.y = this._playerBody.position[1];
+        // this._player.sprite.position.copy(this._player.position);
     }
 }
