@@ -50,11 +50,13 @@ export default class PlayerUpdater {
         } else if (isRunning && this._player.direction === "RIGHT" && (anim.name !== "run-right" || anim.disabled || !anim.play)) {
             anim.name = "run-right";
             anim.play = true;
+            anim.repeat = true;
             anim.time = 0;
             anim.disabled = false;
         } else if (isRunning && this._player.direction === "LEFT" && (anim.name !== "run-left" || anim.disabled || !anim.play)) {
             anim.name = "run-left";
             anim.play = true;
+            anim.repeat = true;
             anim.time = 0;
             anim.disabled = false;
         }

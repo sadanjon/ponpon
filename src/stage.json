@@ -32,11 +32,6 @@
       "position": [0, 1],
       "zIndex": 0,
       "hidden": false,
-      "spriteAnimation": {
-        "name": "run-right",
-        "play": true,
-        "time": 0
-      },
       "spriteBody": {
         "shape": {
           "type": "box",

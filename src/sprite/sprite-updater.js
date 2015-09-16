@@ -28,9 +28,7 @@ export default class SpriteUpdater {
         if (!sprite.spriteAnimation.disabled) {
             var anim = sprite.spriteAnimation;
             var animDef = sprite.spriteSheet.animations[anim.name];
-            var flipDirection = animDef.end < animDef.start;
-            var numFrames = Math.abs(animDef.end - animDef.start) + 1;
-            var curFrame = animDef.start + (flipDirection ? -1 : 1) * (parseInt(anim.time / (this._fpsToMspf(animDef.fps) * numFrames)) % numFrames);
+            var curFrame = this._getFrameNumber(anim, animDef);
             var offset = this._getOffsetFromFrame(sprite, curFrame);
             sprite.mesh.material.setDiffuseTextureOffset(offset.x, offset.y);
         } else if (sprite.spriteStatic) {
@@ -38,6 +36,22 @@ export default class SpriteUpdater {
             var offset = this._getOffsetFromFrame(sprite, staticFrame);
             sprite.mesh.material.setDiffuseTextureOffset(offset.x, offset.y);
         }
+    }
+
+    _getFrameNumber(anim, animDef) {
+        var flipDirection = animDef.end < animDef.start;
+        return animDef.start + (flipDirection ? -1 : 1) * this._getRelativeFrameNumber(anim, animDef);
+    }
+
+    _getRelativeFrameNumber(anim, animDef) {
+        var numFrames = Math.abs(animDef.end - animDef.start) + 1;
+        var frameNumber = parseInt(anim.time / (this._fpsToMspf(animDef.fps) * numFrames));
+        if (anim.repeat)
+            return frameNumber % numFrames;
+        else if (frameNumber >= numFrames)
+            return numFrames - 1;
+        else
+            return frameNumber;
     }
 
     _getOffsetFromFrame(sprite, frame) {

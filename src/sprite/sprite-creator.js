@@ -1,6 +1,14 @@
 import THREE from "three";
 import SpriteMaterial from "./sprite-material";
 
+const DEFAULT_SPRITE_ANIMATION = {
+	name: null,
+	play: false,
+	time: 0,
+	repeat: false,
+	disabled: true
+};
+
 export default class SpriteCreator {
 	constructor() {
 		this._geometry = null;
@@ -17,7 +25,7 @@ export default class SpriteCreator {
 			hidden: options.hidden,
 			width: options.width,
 			height: options.height,
-			spriteAnimation: options.spriteAnimation || {name: null, play: false, time: 0, disabled: true},
+			spriteAnimation: Object.assign(DEFAULT_SPRITE_ANIMATION, options.spriteAnimation),
 			spriteStatic: options.spriteStatic || null,
 			spriteBody: options.spriteBody || null
 		};
