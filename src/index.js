@@ -1,3 +1,4 @@
+import "babel-core/polyfill";
 import THREE from "three";
 import {SpriteCreator, SpriteSheetCreator, SpriteUpdater} from "./sprite";
 import StageBuilder from "./stage-builder";
@@ -18,7 +19,6 @@ document.body.appendChild( renderer.domElement );
 var stageBuilder = new StageBuilder();
 var spriteUpdater = new SpriteUpdater();
 var inputService = new InputService();
-
 
 stageBuilder.build({
 	"spriteSheets": {
@@ -58,6 +58,17 @@ stageBuilder.build({
 				"name": "run-right",
 				"play": true,
 				"time": 0
+			},
+			"spriteBody": {
+				shape: {
+					type: "box",
+					width: 2,
+					height: 2
+				},
+				mass: 1,
+				fixedRotation: true,
+				position: [0, 2],
+				gravityScale: 4
 			}
 		}
 	}
@@ -69,20 +80,6 @@ stageBuilder.build({
 	p2World.islandSplit = true;
 	p2World.sleepMode = p2.World.ISLAND_SLEEPING;
 	p2World.setGlobalStiffness(1e4);
-	var boxShape = new p2.Box({width: 2, height: 2});
-	var boxBody = new p2.Body({
-		mass: 1,
-		// damping: 0, 
-		fixedRotation: true,
-		// sleepSpeedLimit: 0.1,
-		position: [0, 2],
-		// velocity: [0, 0],
-		gravityScale: 4,
-		// ccdSpeedThreshold: 0.1,
-		// ccdIterations: 20,
-	});
-	boxBody.addShape(boxShape);
-	p2World.addBody(boxBody);
 
 	var planeShape = new p2.Plane();
 	var planeBody = new p2.Body({
@@ -95,15 +92,15 @@ stageBuilder.build({
 	var boxMaterial = new p2.Material();
 	var planeMaterial = new p2.Material();
 
-
 	p2World.defaultContactMaterial = new p2.ContactMaterial(boxMaterial, planeMaterial, {
 		restitution: 0,
 		relaxation: 1e10
 	});
 	console.log(p2World.defaultContactMaterial);
 
+    p2World.addBody(stage.sprites.keen.spriteBody);
 	var player = new Player(stage.sprites.keen);
-	var playerUpdater = new PlayerUpdater(inputService, player, boxBody);
+	var playerUpdater = new PlayerUpdater(inputService, player);
 
 	scene.add(stage.sprites.keen.mesh);
 

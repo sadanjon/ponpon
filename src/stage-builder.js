@@ -1,11 +1,12 @@
 import THREE from "three";
-import {SpriteSheetCreator, SpriteCreator} from "./sprite";
+import {SpriteSheetCreator, SpriteBodyCreator, SpriteCreator} from "./sprite";
 
 export default class StageBuilder {
 
     constructor() {
         this._spriteSheetCreator = new SpriteSheetCreator();
         this._spriteCreator = new SpriteCreator();
+        this._spriteBodyCreator = new SpriteBodyCreator();
     }
 
     build(stageDefinition) {
@@ -43,7 +44,8 @@ export default class StageBuilder {
                     zIndex: value.zIndex,
                     hidden: value.hidden,
                     spriteStatic: value.spriteStatic,
-                    spriteAnimation: value.spriteAnimation
+                    spriteAnimation: value.spriteAnimation,
+                    spriteBody: value.spriteBody ? this._spriteBodyCreator.create(value.spriteBody) : null
                 });
             });
             stage.sprites = this._arrayToObject(sprites);

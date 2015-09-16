@@ -9,7 +9,7 @@ export default class SpriteCreator {
 
 	create(options) {
 		var mesh = new THREE.Mesh(this._createGeometry(), this._createMaterial(options));
-		return new Sprite({
+		var sprite = new Sprite({
 			id: options.id,
 			mesh: mesh,
 			spriteSheet: options.spriteSheet,
@@ -19,8 +19,11 @@ export default class SpriteCreator {
 			width: options.width,
 			height: options.height,
 			spriteAnimation: options.spriteAnimation,
-			spriteStatic: options.spriteStatic
+			spriteStatic: options.spriteStatic,
+			spriteBody: options.spriteBody
 		});
+		this._addSpriteToBodyIfDefined(sprite, options.spriteBody);
+		return sprite;
 	}
 
 	_createMaterial(options) {
@@ -33,5 +36,10 @@ export default class SpriteCreator {
 		if (!this._geometry)
 			this._geometry = new THREE.PlaneBufferGeometry(1, 1);
 		return this._geometry;
+	}
+
+	_addSpriteToBodyIfDefined(sprite, spriteBody) {
+		if (spriteBody)
+			spriteBody.sprite = sprite;
 	}
 }

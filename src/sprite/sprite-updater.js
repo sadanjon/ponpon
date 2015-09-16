@@ -2,6 +2,10 @@
 export default class SpriteUpdater {
 
     update(sprite, dt) {
+        if (sprite.spriteBody) {
+            sprite.position.x = sprite.spriteBody.position[0];
+            sprite.position.y = sprite.spriteBody.position[1];
+        }
         sprite.mesh.position.x = sprite.position.x;
         sprite.mesh.position.y = sprite.position.y;
         sprite.mesh.position.z = sprite.zIndex;

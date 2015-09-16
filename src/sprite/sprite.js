@@ -13,5 +13,6 @@ export default class Sprite {
         this.height = options.height;
         this.spriteAnimation = options.spriteAnimation || {name: null, play: false, time: 0, disabled: true};
         this.spriteStatic = options.spriteStatic || null;
+        this.spriteBody = options.spriteBody || null;
     }
 }
