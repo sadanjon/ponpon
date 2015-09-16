@@ -1,20 +1,17 @@
 import THREE from "three";
-import SpriteSheet from "./sprite-sheet";
 
 export default class SpriteSheetCreator {
-	constructor() {
-	}
 
 	create(options) {
 		return this._loadTexture(options.diffusePath)
 		.then(diffuseTexture => {
-			return new SpriteSheet({
+			return {
 				id: options.id,
 				grid: options.grid,
 				animations: options.animations,
 				statics: options.statics,
 				diffuseTexture: diffuseTexture
-			});
+			};
 		});
 	}
 

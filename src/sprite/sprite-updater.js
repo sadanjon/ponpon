@@ -19,15 +19,12 @@ export default class SpriteUpdater {
 
     _updateSpriteTextureScale(sprite) {    
         var grid = sprite.spriteSheet.grid;
-        var imageWidth = sprite.spriteSheet.getImageWidth();
-        var imageHeight = sprite.spriteSheet.getImageHeight();
+        var imageWidth = sprite.spriteSheet.diffuseTexture.image.width;
+        var imageHeight = sprite.spriteSheet.diffuseTexture.image.height;
         sprite.mesh.material.setDiffuseTextureScale(grid.repeat.x / imageWidth, grid.repeat.y / imageHeight);
     }
 
     _updateSpriteTextureOffset(sprite) {
-        var grid = sprite.spriteSheet.grid;
-        var imageWidth = sprite.spriteSheet.getImageWidth();
-        var imageHeight = sprite.spriteSheet.getImageHeight();
         if (!sprite.spriteAnimation.disabled) {
             var anim = sprite.spriteAnimation;
             var animDef = sprite.spriteSheet.animations[anim.name];
@@ -45,7 +42,7 @@ export default class SpriteUpdater {
 
     _getOffsetFromFrame(sprite, frame) {
         var grid = sprite.spriteSheet.grid;
-        var imageWidth = sprite.spriteSheet.getImageWidth();
+        var imageWidth = sprite.spriteSheet.diffuseTexture.image.width;
         var offsetRows = (grid.offset.x + (frame * grid.repeat.x)) / imageWidth;
         var offsetX = offsetRows - parseInt(offsetRows);
         var offsetY = parseInt(offsetRows);

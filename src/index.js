@@ -20,59 +20,7 @@ var stageBuilder = new StageBuilder();
 var spriteUpdater = new SpriteUpdater();
 var inputService = new InputService();
 
-stageBuilder.build({
-	"spriteSheets": {
-		"keen": {
-			"diffusePath": "/resources/sprite1.png",
-			"grid": {
-				"repeat": [32, 32],
-				"offset": [0, 0]
-			},
-			"animations": {
-				"run-left": {
-					"start": -2,
-					"end": -5,
-					"fps": 30
-				},
-				"run-right": {
-					"start": 1,
-					"end": 4,
-					"fps": 30	
-				}
-			},
-			"statics": {
-				"stand-left": -1,
-				"stand-right": 0
-			}
-		}
-	},
-	"sprites": {
-		"keen": {
-			"spriteSheet": "keen",
-			"width": 2,
-			"height": 2,
-			"position": [0, 1],
-			"zIndex": 0,
-			"hidden": false,
-			"spriteAnimation": {
-				"name": "run-right",
-				"play": true,
-				"time": 0
-			},
-			"spriteBody": {
-				shape: {
-					type: "box",
-					width: 2,
-					height: 2
-				},
-				mass: 1,
-				fixedRotation: true,
-				position: [0, 2],
-				gravityScale: 4
-			}
-		}
-	}
-})
+stageBuilder.build(require("./stage.json"))
 .then(stage => {
 	var p2World = new p2.World();
 	p2World.solver.iterations = 200;

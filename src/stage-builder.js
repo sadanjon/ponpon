@@ -13,7 +13,6 @@ export default class StageBuilder {
         stageDefinition = stageDefinition || {};
         var spriteSheetsDefs = stageDefinition["spriteSheets"] || [];
         var spriteDefs = stageDefinition["sprites"] || [];
-        var stage = {};
         var spriteSheetPromises = this._keyValueMapper(spriteSheetsDefs, (key, value) => {
             return this._spriteSheetCreator.create({
                 id: key,

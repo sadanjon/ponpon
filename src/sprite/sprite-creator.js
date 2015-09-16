@@ -1,6 +1,5 @@
 import THREE from "three";
 import SpriteMaterial from "./sprite-material";
-import Sprite from "./sprite";
 
 export default class SpriteCreator {
 	constructor() {
@@ -9,19 +8,19 @@ export default class SpriteCreator {
 
 	create(options) {
 		var mesh = new THREE.Mesh(this._createGeometry(), this._createMaterial(options));
-		var sprite = new Sprite({
+		var sprite = {
 			id: options.id,
 			mesh: mesh,
 			spriteSheet: options.spriteSheet,
 			position: options.position,
-			zIndex: options.zIndex,
+			zIndex: options.zIndex || 0,
 			hidden: options.hidden,
 			width: options.width,
 			height: options.height,
-			spriteAnimation: options.spriteAnimation,
-			spriteStatic: options.spriteStatic,
-			spriteBody: options.spriteBody
-		});
+			spriteAnimation: options.spriteAnimation || {name: null, play: false, time: 0, disabled: true},
+			spriteStatic: options.spriteStatic || null,
+			spriteBody: options.spriteBody || null
+		};
 		this._addSpriteToBodyIfDefined(sprite, options.spriteBody);
 		return sprite;
 	}
