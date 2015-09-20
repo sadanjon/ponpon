@@ -22,6 +22,8 @@ export default class SpriteBodyCreator {
         switch(options.shape.type) {
             case "box":
                 return new p2.Box(shapeOptions);
+            case "capsule":
+                return new p2.Capsule(shapeOptions);
             default:
                 throw new Error("No shape type definition in sprite body shape");
         }

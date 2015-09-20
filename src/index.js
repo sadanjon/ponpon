@@ -41,8 +41,10 @@ stageBuilder.build(require("../resources/stage.json"))
 	var planeMaterial = new p2.Material();
 
 	p2World.defaultContactMaterial = new p2.ContactMaterial(boxMaterial, planeMaterial, {
-		restitution: 0,
-		relaxation: 1e10
+        contactSkinSize: 10,
+        stiffness: 1e10,
+		//restitution: 0,
+		//relaxation: 10
 	});
 	console.log(p2World.defaultContactMaterial);
 
@@ -54,8 +56,8 @@ stageBuilder.build(require("../resources/stage.json"))
 
     stage.tileSprites.forEach(sprite => {
         scene.add(sprite.mesh);
-        if (sprite.body)
-            p2World.addBody(sprite.body);
+        if (sprite.spriteBody)
+			p2World.addBody(sprite.spriteBody);
     });
 
 	camera.position.z = 5;

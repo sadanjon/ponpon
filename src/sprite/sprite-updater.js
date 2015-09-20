@@ -63,10 +63,12 @@ export default class SpriteUpdater {
     _getOffsetFromFrame(sprite, frame) {
         var grid = sprite.spriteSheet.grid;
         var imageWidth = sprite.spriteSheet.diffuseTexture.image.width;
+        var imageHeight = sprite.spriteSheet.diffuseTexture.image.height;
         var offsetRows = (grid.offset.x + (frame * grid.repeat.x)) / imageWidth;
         var offsetX = offsetRows - parseInt(offsetRows);
-        var offsetY = parseInt(offsetRows);
-        return {x: offsetX, y: offsetY};
+        var xxx = parseInt(imageHeight / grid.repeat.y) - parseInt(offsetRows) - 1;
+        var offsetY = (xxx * grid.repeat.y) / imageHeight;
+        return { x: offsetX, y: offsetY };
     }
 
     _fpsToMspf(fps) {

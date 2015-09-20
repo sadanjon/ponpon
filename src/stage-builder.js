@@ -68,7 +68,7 @@ export default class StageBuilder {
                         height: value.tileHeight,
                         position: tilePosition,
                         zIndex: value.zIndex,
-                        hidden: spriteFrame !== -1,
+                        hidden: spriteFrame === -1,
                         spriteStatic: null,
                         spriteAnimation: null,
                         spriteFrame: spriteFrame,
@@ -93,10 +93,10 @@ export default class StageBuilder {
     _getTilePosition(tileMapDef, tileIndex) {
         var col = tileIndex % tileMapDef.width;
         var row = parseInt(tileIndex / tileMapDef.width);
-        var x = tileMapDef.position[0] - (tileMapDef.width * tileMapDef.tileWidth / 2);
-        var y = tileMapDef.position[1] - (tileMapDef.height * tileMapDef.tileHeight / 2);
+        var x =  tileMapDef.position[0] - (tileMapDef.width * tileMapDef.tileWidth / 2);
+        var y = tileMapDef.position[1] + (tileMapDef.height * tileMapDef.tileHeight / 2);
         x += tileMapDef.tileWidth * (col + 0.5);
-        y += tileMapDef.tileHeight * (row + 0.5);
+        y -= tileMapDef.tileHeight * (row + 0.5);
         return new THREE.Vector2(x, y);
     }
 
