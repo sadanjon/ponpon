@@ -4,6 +4,10 @@ export default class SpriteMaterial extends THREE.ShaderMaterial {
 	constructor(options) {
 		super({
 			uniforms: {
+				alpha: {
+					type: "f",
+					value: options.alpha || 1
+				},
 				diffuseTexture: { 
 					type: "t", 
 					value: options.diffuseTexture
@@ -30,11 +34,12 @@ export default class SpriteMaterial extends THREE.ShaderMaterial {
 			`,
 			fragmentShader: `
 				uniform sampler2D diffuseTexture;
+				uniform float alpha;
 
 				varying vec2 v_uv;
 
 				void main() {
-					gl_FragColor = texture2D(diffuseTexture, v_uv);
+					gl_FragColor = texture2D(diffuseTexture, v_uv) * vec4(1, 1, 1, alpha);
 				}
 			`
 		});
@@ -47,5 +52,9 @@ export default class SpriteMaterial extends THREE.ShaderMaterial {
 
 	setDiffuseTextureScale(x, y) {
 		this.uniforms.diffuseTextureScale.value.set(x, y);
+	}
+
+	setAlpha(alpha) {
+		this.uniforms.alpha.value = alpha;
 	}
 }

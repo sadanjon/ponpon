@@ -15,6 +15,7 @@ export default class SpriteUpdater {
         this._updateSpriteTextureOffset(sprite);
         if (sprite.spriteAnimation && sprite.spriteAnimation.play)
             sprite.spriteAnimation.time += dt;
+        sprite.mesh.material.setAlpha(sprite.alpha);
     }
 
     _updateSpriteTextureScale(sprite) {    
@@ -25,15 +26,20 @@ export default class SpriteUpdater {
     }
 
     _updateSpriteTextureOffset(sprite) {
-        if (!sprite.spriteAnimation.disabled) {
+        if (sprite.spriteAnimation && !sprite.spriteAnimation.disabled) {
+            if (sprite.id !== "keen")
+                debugger;
             var anim = sprite.spriteAnimation;
             var animDef = sprite.spriteSheet.animations[anim.name];
             var curFrame = this._getFrameNumber(anim, animDef);
             var offset = this._getOffsetFromFrame(sprite, curFrame);
             sprite.mesh.material.setDiffuseTextureOffset(offset.x, offset.y);
-        } else if (sprite.spriteStatic) {
+        } else if (sprite.spriteStatic && !sprite.spriteStatic.disabled) {
             var staticFrame = sprite.spriteSheet.statics[sprite.spriteStatic];
             var offset = this._getOffsetFromFrame(sprite, staticFrame);
+            sprite.mesh.material.setDiffuseTextureOffset(offset.x, offset.y);
+        } else if (sprite.spriteFrame) {
+            var offset = this._getOffsetFromFrame(sprite, sprite.spriteFrame);
             sprite.mesh.material.setDiffuseTextureOffset(offset.x, offset.y);
         }
     }

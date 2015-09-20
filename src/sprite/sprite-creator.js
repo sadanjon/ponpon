@@ -25,9 +25,11 @@ export default class SpriteCreator {
 			hidden: options.hidden,
 			width: options.width,
 			height: options.height,
-			spriteAnimation: Object.assign(DEFAULT_SPRITE_ANIMATION, options.spriteAnimation),
+			spriteAnimation: Object.assign({}, DEFAULT_SPRITE_ANIMATION, options.spriteAnimation),
 			spriteStatic: options.spriteStatic || null,
-			spriteBody: options.spriteBody || null
+			spriteFrame: options.spriteFrame || null,
+			spriteBody: options.spriteBody || null,
+			alpha: typeof options.alpha === "undefined" ? 1 : options.alpha
 		};
 		this._addSpriteToBodyIfDefined(sprite, options.spriteBody);
 		return sprite;

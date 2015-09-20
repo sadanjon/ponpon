@@ -11,8 +11,9 @@ export default class StageBuilder {
 
     build(stageDefinition) {
         stageDefinition = stageDefinition || {};
-        var spriteSheetsDefs = stageDefinition["spriteSheets"] || [];
-        var spriteDefs = stageDefinition["sprites"] || [];
+        var spriteSheetsDefs = stageDefinition["spriteSheets"] || {};
+        var spriteDefs = stageDefinition["sprites"] || {};
+        var tileMapDefs = stageDefinition["tileMaps"] || {};
         var spriteSheetPromises = this._keyValueMapper(spriteSheetsDefs, (key, value) => {
             return this._spriteSheetCreator.create({
                 id: key,
@@ -49,7 +50,54 @@ export default class StageBuilder {
             });
             stage.sprites = this._arrayToObject(sprites);
             return stage;
+        })
+        .then(stage => {
+            var tileSprites = [];
+            this._keyValueIterator(tileMapDefs, (id, value) => {
+                for (var i = 0; i < value.tiles.length; ++i) {
+                    var spriteFrame = value.tiles[i] - 1;
+                    var collides = !!value.collision[i];
+                    if (spriteFrame === -1 && !collides)
+                        continue;
+                    var spriteSheet = this._findSpriteSheetOrThrow([value.spriteSheet], stage.spriteSheets);
+                    var tilePosition = this._getTilePosition(value, i);
+                    var sprite = this._spriteCreator.create({
+                        id: id + "-" + i,
+                        spriteSheet: spriteSheet,
+                        width: value.tileWidth,
+                        height: value.tileHeight,
+                        position: tilePosition,
+                        zIndex: value.zIndex,
+                        hidden: spriteFrame !== -1,
+                        spriteStatic: null,
+                        spriteAnimation: null,
+                        spriteFrame: spriteFrame,
+                        spriteBody: !collides ? null : this._spriteBodyCreator.create({
+                            shape: {
+                                type: "box",
+                                width: value.tileWidth,
+                                height: value.tileHeight
+                            },
+                            mass: 0,
+                            position: [tilePosition.x, tilePosition.y]
+                        })
+                    });
+                    tileSprites.push(sprite);
+                }
+            });
+            stage.tileSprites = tileSprites;
+            return stage;
         });
+    }
+
+    _getTilePosition(tileMapDef, tileIndex) {
+        var col = tileIndex % tileMapDef.width;
+        var row = parseInt(tileIndex / tileMapDef.width);
+        var x = tileMapDef.position[0] - (tileMapDef.width * tileMapDef.tileWidth / 2);
+        var y = tileMapDef.position[1] - (tileMapDef.height * tileMapDef.tileHeight / 2);
+        x += tileMapDef.tileWidth * (col + 0.5);
+        y += tileMapDef.tileHeight * (row + 0.5);
+        return new THREE.Vector2(x, y);
     }
 
     _keyValueIterator(obj, cb) {

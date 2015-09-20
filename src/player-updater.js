@@ -39,6 +39,8 @@ export default class PlayerUpdater {
     }
 
     _updatePlayerSpriteAnimation() {
+        if (this._player.sprite.id !== "keen")
+            debugger;
         var anim = this._player.sprite.spriteAnimation;
         var isRunning = Math.abs(this._player.sprite.spriteBody.velocity[0]) > 0;
         if (!isRunning && this._player.direction === "RIGHT") {

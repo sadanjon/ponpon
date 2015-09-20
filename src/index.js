@@ -20,7 +20,7 @@ var stageBuilder = new StageBuilder();
 var spriteUpdater = new SpriteUpdater();
 var inputService = new InputService();
 
-stageBuilder.build(require("./stage.json"))
+stageBuilder.build(require("../resources/stage.json"))
 .then(stage => {
 	var p2World = new p2.World();
 	p2World.solver.iterations = 200;
@@ -29,13 +29,13 @@ stageBuilder.build(require("./stage.json"))
 	p2World.sleepMode = p2.World.ISLAND_SLEEPING;
 	p2World.setGlobalStiffness(1e4);
 
-	var planeShape = new p2.Plane();
-	var planeBody = new p2.Body({
-		mass: 0,
-		position: [0, -2]
-	});
-	planeBody.addShape(planeShape);
-	p2World.addBody(planeBody);
+	//var planeShape = new p2.Plane();
+	//var planeBody = new p2.Body({
+	//	mass: 0,
+	//	position: [0, -2]
+	//});
+	//planeBody.addShape(planeShape);
+	//p2World.addBody(planeBody);
 
 	var boxMaterial = new p2.Material();
 	var planeMaterial = new p2.Material();
@@ -51,6 +51,12 @@ stageBuilder.build(require("./stage.json"))
 	var playerUpdater = new PlayerUpdater(inputService, player);
 
 	scene.add(stage.sprites.keen.mesh);
+
+    stage.tileSprites.forEach(sprite => {
+        scene.add(sprite.mesh);
+        if (sprite.body)
+            p2World.addBody(sprite.body);
+    });
 
 	camera.position.z = 5;
 
@@ -71,10 +77,13 @@ stageBuilder.build(require("./stage.json"))
 
 	function update(dt) {
 		p2World.step(dt / 1000);
-		// console.log(boxBody.position[0], boxBody.position[1]);
 		playerUpdater.update(dt);
 		spriteUpdater.update(stage.sprites.keen, dt);
-	}	
+        for (var i = 0; i < stage.tileSprites.length; ++i) {
+            //console.log(stage.tileSprites[i].position.x, stage.tileSprites[i].position.x);
+            spriteUpdater.update(stage.tileSprites[i], dt);
+        }
+	}
 
 	requestAnimationFrame(renderInitial);
 });

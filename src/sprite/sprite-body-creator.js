@@ -11,7 +11,6 @@ export default class SpriteBodyCreator {
         var shape = this._createShape(options);
         var body = this._createBody(options);
         body.addShape(shape);
-        console.log(body);
         return body;
     }
 
